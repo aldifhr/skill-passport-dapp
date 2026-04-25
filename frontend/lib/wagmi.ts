@@ -1,5 +1,6 @@
 import { http, createConfig } from 'wagmi'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
+import { sepolia } from 'wagmi/chains'
 import type { Chain } from 'viem'
 
 export const ritualTestnet = {
@@ -27,8 +28,9 @@ export const ritualTestnet = {
 export const config = getDefaultConfig({
   appName: 'Universal Skill Passport',
   projectId: 'c3f8e5d2a1b4c6e7f8a9b0c1d2e3f4a5',
-  chains: [ritualTestnet],
+  chains: [sepolia, ritualTestnet],
   transports: {
+    [sepolia.id]: http(),
     [ritualTestnet.id]: http(),
   },
   ssr: true,
