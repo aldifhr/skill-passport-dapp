@@ -41,10 +41,13 @@ export function formatAddress(address: string): string {
 }
 
 /**
- * Format date for display
+ * Format date for display (handles both seconds and milliseconds)
  */
 export function formatDate(timestamp: number): string {
-  return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+  if (!timestamp) return 'N/A'
+  // If timestamp is in seconds (e.g. 1714041600), convert to ms
+  const ms = timestamp < 10000000000 ? timestamp * 1000 : timestamp
+  return new Date(ms).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -61,10 +64,13 @@ export function generateUUID(): string {
 /**
  * Get verification URL for credential
  */
-export function getVerificationURL(credentialId: string): string {
+export function getVerificationUrl(credentialId: string): string {
   if (typeof window === 'undefined') return ''
   return `${window.location.origin}/verify/${credentialId}`
 }
+
+/** Alias for compatibility */
+export const getVerificationURL = getVerificationUrl
 
 /**
  * Credential type labels

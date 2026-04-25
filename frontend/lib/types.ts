@@ -23,13 +23,13 @@ export interface Credential {
   issuerAddress: string
   issuerName: string
   holderAddress: string
+  credentialHash: string
   holderName?: string
   skills: string[]
   issuedAt: number
   expiresAt?: number
   revokedAt?: number
   status: CredentialStatus
-  hash: string
   evidenceLink?: string
   verificationCount: number
 }

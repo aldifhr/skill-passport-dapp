@@ -1,307 +1,234 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { formatAddress, formatDate, CREDENTIAL_TYPE_LABELS } from '@/lib/utils'
+import { Shield, CheckCircle2, AlertCircle, Clock, ExternalLink, Copy, Share2, Award, Building2, User, FileText, Globe, Box, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { Shield, Check, X, Clock, ArrowLeft, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { formatDate, formatAddress } from '@/lib/utils'
+
+// Mock verification data
+const MOCK_CREDENTIAL = {
+  id: 'cred-001',
+  title: 'Full Stack Developer Certificate',
+  type: 'certificate',
+  status: 'valid',
+  issuerName: 'Tech Academy',
+  issuerAddress: '0x1234567890123456789012345678901234567890',
+  holderName: 'Alice Johnson',
+  holderAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+  issuedAt: 1714041600000,
+  credentialHash: '0xabcd1234efgh5678ijkl9012mnop3456qrst7890uvwx1234yzab5678cdef9012',
+  transactionHash: '0x9876543210abcdef9876543210abcdef9876543210abcdef9876543210abcdef',
+  blockNumber: '1,420,690',
+  skills: ['React', 'Node.js', 'PostgreSQL', 'Solidity', 'Tailwind CSS'],
+  description: 'Successfully completed the 6-month intensive Full Stack Web Development program, demonstrating proficiency in modern frontend frameworks, backend architecture, and decentralized applications.',
+}
 
 export default function VerifyPage() {
-  const params = useParams()
-  const credentialId = params?.id as string
-  const [credentialData, setCredentialData] = useState<any>(null)
+  const { id } = useParams()
+  const [isVerifying, setIsVerifying] = useState(true)
 
   useEffect(() => {
-    if (credentialId) {
-      const demoCredentials: Record<string, any> = {
-        'cred-demo-1': {
-          id: 'cred-demo-1',
-          title: 'Bachelor of Computer Science',
-          type: 'degree',
-          description: 'Four-year undergraduate degree program in Computer Science with focus on algorithms, software engineering, and machine learning.',
-          issuerAddress: '0x1234567890123456789012345678901234567890',
-          issuerName: 'MIT University',
-          issuerVerified: true,
-          holderAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-          skills: ['Algorithms', 'Data Structures', 'Software Engineering', 'Machine Learning', 'Python', 'Java'],
-          issuedAt: Math.floor(Date.now() / 1000) - 86400 * 365,
-          expiresAt: 0,
-          status: 'valid',
-          hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
-          verificationCount: 47,
-          evidenceLink: 'https://mit.edu/verify/john-doe-cs-2023'
-        },
-        'cred-demo-2': {
-          id: 'cred-demo-2',
-          title: 'Smart Contract Security Audit',
-          type: 'certificate',
-          description: 'Comprehensive training in smart contract security auditing, covering common vulnerabilities and best practices.',
-          issuerAddress: '0x2345678901234567890123456789012345678901',
-          issuerName: 'CertiK',
-          issuerVerified: true,
-          holderAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-          skills: ['Solidity', 'Security Auditing', 'Smart Contracts', 'Blockchain'],
-          issuedAt: Math.floor(Date.now() / 1000) - 86400 * 180,
-          expiresAt: Math.floor(Date.now() / 1000) + 86400 * 185,
-          status: 'valid',
-          hash: '0xdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abc',
-          verificationCount: 23,
-          evidenceLink: 'https://certik.com/certificates/sc-audit-2024'
-        },
-        'cred-demo-3': {
-          id: 'cred-demo-3',
-          title: 'Full Stack Developer Bootcamp',
-          type: 'training',
-          description: '12-week intensive bootcamp covering full-stack web development.',
-          issuerAddress: '0x3456789012345678901234567890123456789012',
-          issuerName: 'Le Wagon',
-          issuerVerified: true,
-          holderAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-          skills: ['React', 'Node.js', 'PostgreSQL', 'JavaScript'],
-          issuedAt: Math.floor(Date.now() / 1000) - 86400 * 90,
-          expiresAt: 0,
-          status: 'valid',
-          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-          verificationCount: 12
-        },
-        'cred-demo-4': {
-          id: 'cred-demo-4',
-          title: 'Community Moderator',
-          type: 'membership',
-          description: 'Active community moderator for Ethereum Foundation Discord.',
-          issuerAddress: '0x4567890123456789012345678901234567890123',
-          issuerName: 'Ethereum Foundation',
-          issuerVerified: true,
-          holderAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-          skills: ['Community Management', 'Discord', 'Governance'],
-          issuedAt: Math.floor(Date.now() / 1000) - 86400 * 200,
-          expiresAt: Math.floor(Date.now() / 1000) - 86400 * 10,
-          status: 'expired',
-          hash: '0x567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
-          verificationCount: 8
-        },
-        'cred-demo-5': {
-          id: 'cred-demo-5',
-          title: 'Bug Bounty Achievement',
-          type: 'assessment',
-          description: 'Successfully identified critical vulnerability in DeFi protocol.',
-          issuerAddress: '0x5678901234567890123456789012345678901234',
-          issuerName: 'Immunefi',
-          issuerVerified: true,
-          holderAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-          skills: ['Security Research', 'Penetration Testing', 'Bug Hunting'],
-          issuedAt: Math.floor(Date.now() / 1000) - 86400 * 60,
-          expiresAt: 0,
-          status: 'valid',
-          hash: '0x9abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789',
-          verificationCount: 31,
-          evidenceLink: 'https://immunefi.com/bounty/report-12345'
-        }
-      }
-
-      setCredentialData(demoCredentials[credentialId] || null)
-    }
-  }, [credentialId])
-
-  if (!credentialId) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <X className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-semibold mb-4">No credential ID</h1>
-          <p className="text-gray-400 text-sm">Provide a credential ID to verify</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!credentialData) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <X className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-semibold mb-4">Credential not found</h1>
-          <p className="text-gray-400 text-sm mb-6">
-            ID <code className="px-2 py-1 bg-gray-900 rounded text-xs">{credentialId}</code> does not exist
-          </p>
-          <Link href="/" className="px-6 py-3 bg-white text-black font-medium rounded hover:bg-gray-200 transition inline-block">
-            Go Home
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  const isValid = credentialData.status === 'valid'
-  const isExpired = credentialData.status === 'expired'
-  const isRevoked = credentialData.status === 'revoked'
+    // Simulate verification process
+    const timer = setTimeout(() => setIsVerifying(false), 2000)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+    <div className="min-h-screen bg-[#020617] text-white selection:bg-emerald-500/30">
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-emerald-500/5 blur-[100px] rounded-full animate-pulse-slow" />
+        <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-sky-500/5 blur-[100px] rounded-full animate-pulse-slow" />
+      </div>
+
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="container mx-auto px-6 h-16 flex justify-between items-center">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-all">
+            <Shield className="w-5 h-5 text-emerald-400" />
+            <span className="font-bold tracking-tight text-white/90">Skill Passport <span className="text-[10px] font-bold text-slate-500 ml-1">VERIFICATION</span></span>
+          </Link>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-gray-400 hover:text-white">
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <Shield className="w-6 h-6" />
-              <span className="font-semibold">Verification</span>
-            </div>
+            <Link href="/" className="text-sm font-bold text-slate-500 hover:text-white transition-colors">Documentation</Link>
+            <div className="h-4 w-[1px] bg-white/10" />
+            <Share2 className="w-4 h-4 text-slate-500 cursor-pointer hover:text-white transition-colors" />
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-12 max-w-3xl">
-        {/* Status */}
-        <div className={`p-6 rounded mb-8 border ${
-          isValid ? 'bg-gray-900 border-white' :
-          isExpired ? 'bg-gray-900 border-gray-600' :
-          'bg-gray-900 border-gray-800'
-        }`}>
-          <div className="flex items-center gap-4">
-            {isValid && <Check className="w-10 h-10" />}
-            {isExpired && <Clock className="w-10 h-10 text-gray-500" />}
-            {isRevoked && <X className="w-10 h-10 text-gray-500" />}
-            <div>
-              <h2 className="text-2xl font-semibold mb-1">
-                {isValid && 'Valid'}
-                {isExpired && 'Expired'}
-                {isRevoked && 'Revoked'}
-              </h2>
-              <p className="text-sm text-gray-400">
-                {isValid && 'This credential is authentic and verified'}
-                {isExpired && 'This credential has expired'}
-                {isRevoked && 'This credential has been revoked'}
-              </p>
+      <main className="container mx-auto px-6 pt-32 pb-24 max-w-4xl relative z-10">
+        {isVerifying ? (
+          <div className="flex flex-col items-center justify-center py-40 space-y-8">
+            <div className="relative">
+              <div className="w-24 h-24 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+              <Shield className="w-10 h-10 text-emerald-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+            </div>
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold tracking-tight">Verifying Authenticity</h2>
+              <p className="text-slate-500">Checking cryptographic signatures on Ritual Testnet...</p>
             </div>
           </div>
+        ) : (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Status Hero */}
+            <div className="glass-card overflow-hidden border-emerald-500/20 bg-emerald-500/[0.02]">
+              <div className="p-8 md:p-12 text-center relative">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500 to-emerald-500/0" />
+                <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                </div>
+                <h1 className="text-4xl font-black mb-3 tracking-tighter">VERIFIED AUTHENTIC</h1>
+                <p className="text-slate-400 text-sm font-medium uppercase tracking-[0.2em]">Credential status is active and valid</p>
+                <div className="mt-8 flex flex-wrap justify-center gap-4">
+                  <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[10px] font-bold text-emerald-400 flex items-center gap-2">
+                    <Clock className="w-3 h-3" />
+                    Last Checked: Just now
+                  </span>
+                  <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold text-slate-400 flex items-center gap-2">
+                    <Globe className="w-3 h-3" />
+                    Network: Ritual Testnet
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Credential Content */}
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="md:col-span-2 space-y-8">
+                <div className="glass-card p-8 border-white/5">
+                  <div className="flex items-start justify-between mb-10">
+                    <div className="space-y-1">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-2">Subject Title</div>
+                      <h2 className="text-3xl font-bold tracking-tight">{MOCK_CREDENTIAL.title}</h2>
+                    </div>
+                    <Award className="w-10 h-10 text-slate-700" />
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
+                        <FileText className="w-3.5 h-3.5" />
+                        Professional Description
+                      </h3>
+                      <p className="text-slate-300 leading-relaxed text-sm">
+                        {MOCK_CREDENTIAL.description}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
+                        <Box className="w-3.5 h-3.5" />
+                        Verified Skills & Competencies
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {MOCK_CREDENTIAL.skills.map(skill => (
+                          <span key={skill} className="px-3 py-1 bg-white/5 border border-white/5 rounded-lg text-xs font-medium text-slate-300">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass-card p-8 border-white/5">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">Cryptographic Evidence</h3>
+                  <div className="space-y-6">
+                    <EvidenceRow label="Credential Hash" value={MOCK_CREDENTIAL.credentialHash} />
+                    <EvidenceRow label="Transaction Hash" value={MOCK_CREDENTIAL.transactionHash} />
+                    <div className="grid grid-cols-2 gap-8">
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2">Block Number</div>
+                        <div className="font-mono text-xs text-slate-400">{MOCK_CREDENTIAL.blockNumber}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2">Timestamp</div>
+                        <div className="font-mono text-xs text-slate-400">{formatDate(MOCK_CREDENTIAL.issuedAt)}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-8 pt-8 border-t border-white/5">
+                    <button className="w-full secondary-button !text-xs !bg-white/5 group">
+                      View on Ritual Explorer
+                      <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar Info */}
+              <div className="space-y-6">
+                <InfoBox 
+                  icon={<Building2 className="w-5 h-5 text-emerald-400" />}
+                  label="Issuing Institution"
+                  name={MOCK_CREDENTIAL.issuerName}
+                  address={MOCK_CREDENTIAL.issuerAddress}
+                  verified={true}
+                />
+                <InfoBox 
+                  icon={<User className="w-5 h-5 text-sky-400" />}
+                  label="Credential Holder"
+                  name={MOCK_CREDENTIAL.holderName}
+                  address={MOCK_CREDENTIAL.holderAddress}
+                />
+                
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-sky-500/10 border border-emerald-500/20">
+                  <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">Verification Notice</h4>
+                  <p className="text-[10px] text-slate-400 leading-relaxed">
+                    This credential has been cryptographically signed by the issuer and anchored to the blockchain. Any tampering with the data would result in a verification failure.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center pt-12">
+              <Link href="/" className="text-sm font-bold text-slate-600 hover:text-white transition-colors flex items-center gap-2">
+                Report an issue with this verification
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+
+function EvidenceRow({ label, value }: { label: string, value: string }) {
+  return (
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{label}</span>
+        <button className="text-slate-600 hover:text-white transition-colors">
+          <Copy className="w-3 h-3" />
+        </button>
+      </div>
+      <div className="p-3 bg-black/40 rounded-xl border border-white/5 font-mono text-[10px] text-slate-400 break-all leading-relaxed">
+        {value}
+      </div>
+    </div>
+  )
+}
+
+function InfoBox({ icon, label, name, address, verified }: { icon: React.ReactNode, label: string, name: string, address: string, verified?: boolean }) {
+  return (
+    <div className="glass-card p-6 border-white/5">
+      <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-4">{label}</div>
+      <div className="flex items-center gap-4 mb-4">
+        <div className="p-2.5 bg-white/5 rounded-xl border border-white/5">
+          {icon}
         </div>
-
-        {/* Details */}
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-2xl font-semibold mb-6">{credentialData.title}</h3>
+        <div>
+          <div className="font-bold flex items-center gap-2">
+            {name}
+            {verified && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}
           </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Type</div>
-              <div className="text-sm">{CREDENTIAL_TYPE_LABELS[credentialData.type]}</div>
-            </div>
-
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Credential ID</div>
-              <div className="text-xs font-mono bg-gray-900 p-2 rounded break-all">{credentialData.id}</div>
-            </div>
-
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Issuer</div>
-              <div className="text-sm font-medium flex items-center gap-2">
-                {credentialData.issuerName}
-                {credentialData.issuerVerified && <Check className="w-3 h-3" />}
-              </div>
-              <div className="text-xs text-gray-600">{formatAddress(credentialData.issuerAddress)}</div>
-            </div>
-
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Holder</div>
-              <div className="text-xs text-gray-600">{formatAddress(credentialData.holderAddress)}</div>
-            </div>
-
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Issued</div>
-              <div className="text-sm">{formatDate(credentialData.issuedAt)}</div>
-            </div>
-
-            {credentialData.expiresAt > 0 && (
-              <div>
-                <div className="text-xs text-gray-500 mb-1">Expires</div>
-                <div className="text-sm">{formatDate(credentialData.expiresAt)}</div>
-              </div>
-            )}
-
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Verifications</div>
-              <div className="text-sm">{credentialData.verificationCount} times</div>
-            </div>
-
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Hash</div>
-              <div className="text-xs font-mono bg-gray-900 p-2 rounded break-all">{credentialData.hash}</div>
-            </div>
-          </div>
-
-          {credentialData.description && (
-            <div className="pt-6 border-t border-gray-800">
-              <div className="text-xs text-gray-500 mb-2">Description</div>
-              <p className="text-sm text-gray-300">{credentialData.description}</p>
-            </div>
-          )}
-
-          <div className="pt-6 border-t border-gray-800">
-            <div className="text-xs text-gray-500 mb-3">Skills</div>
-            <div className="flex flex-wrap gap-2">
-              {credentialData.skills.map((skill: string) => (
-                <span key={skill} className="px-3 py-1 bg-gray-900 text-sm rounded">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {credentialData.evidenceLink && (
-            <div className="pt-6 border-t border-gray-800">
-              <div className="text-xs text-gray-500 mb-2">Evidence</div>
-              <a
-                href={credentialData.evidenceLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm hover:text-gray-300 flex items-center gap-2"
-              >
-                View evidence <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-gray-800">
-            <div className="text-xs text-gray-500 mb-3">Blockchain verification</div>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4" />
-                <span>Exists on Ritual blockchain</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4" />
-                <span>Issuer signature verified</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4" />
-                <span>Hash matches on-chain record</span>
-              </div>
-              <div className="flex items-center gap-2">
-                {isRevoked ? <X className="w-4 h-4 text-gray-500" /> : <Check className="w-4 h-4" />}
-                <span>{isRevoked ? 'Revoked' : 'Not revoked'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                {isExpired ? <Clock className="w-4 h-4 text-gray-500" /> : <Check className="w-4 h-4" />}
-                <span>{isExpired ? 'Expired' : 'Current'}</span>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <a
-                href={`https://explorer.ritualfoundation.org/tx/${credentialData.hash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm hover:text-gray-300 flex items-center gap-2"
-              >
-                View on explorer <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
+          <div className="text-[10px] text-slate-500 font-medium">Verified Identity</div>
         </div>
+      </div>
+      <div className="pt-4 border-t border-white/5">
+        <div className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">Wallet Address</div>
+        <div className="font-mono text-[10px] text-slate-500">{formatAddress(address)}</div>
       </div>
     </div>
   )
